@@ -1,0 +1,86 @@
+# Manual Setup & Run Guide for Intelligent Self-Healing CI/CD
+
+Follow these steps to manually set up and run the application on your machine from scratch.
+
+## 1. Prerequisites
+Ensure you have the following installed on your machine:
+- **Node.js** (v18+ recommended)
+- **Python** (v3.10+ recommended)
+- **Docker Desktop** (Must be open and running)
+
+---
+
+## 2. Start the Databases (MongoDB & Redis)
+The project relies on MongoDB and Redis, which are configured via Docker.
+
+1. Open your terminal in the root directory of the project.
+2. Run the following command to start the databases in the background:
+   ```bash
+   docker-compose up -d
+   ```
+
+---
+
+## 3. Start the ML Engine (Python)
+The Machine Learning engine uses FastAPI to classify build logs and provide AI suggestions.
+
+1. Open a new terminal and navigate to the `ml-engine` directory:
+   ```bash
+   cd ml-engine
+   ```
+2. Create a virtual environment:
+   ```bash
+   py -m venv venv
+   ```
+3. Install the required Python packages:
+   ```bash
+   .\venv\Scripts\pip install -r requirements.txt
+   ```
+4. Start the ML Engine server:
+   ```bash
+   .\venv\Scripts\python -m uvicorn main:app --reload --port 8000
+   ```
+   *(The ML engine will run at http://localhost:8000)*
+
+---
+
+## 4. Start the Backend CI/CD Engine (Node.js)
+The backend coordinates pipelines, sockets, and Kubernetes integrations.
+
+1. Open a new terminal and navigate to the `server` directory:
+   ```bash
+   cd server
+   ```
+2. Install the Node dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+   *(The backend server will run at http://localhost:4000)*
+
+---
+
+## 5. Start the Frontend Client (React)
+The frontend is built with React and Vite.
+
+1. Open a new terminal and navigate to the `client` directory:
+   ```bash
+   cd client
+   ```
+2. Install the Node dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the frontend client:
+   ```bash
+   npm run dev
+   ```
+   *(The frontend will run at http://localhost:5173)*
+
+---
+
+## Accessing the Application
+Once all 3 servers are running, open your browser and go to **[http://localhost:5173](http://localhost:5173)** to view the application UI.

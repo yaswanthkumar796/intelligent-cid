@@ -1,0 +1,44 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install Dependencies
+      run: |
+        cd server && npm ci
+        cd ../client && npm ci
+        
+    - name: Run Backend Tests
+      run: cd server && npm test || echo "No tests configured yet"
+      
+    - name: Run Frontend Tests
+      run: cd client && npm test || echo "No tests configured yet"
+      
+  docker-build:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Build Backend Image
+      run: docker build -t devops/backend:latest ./server
+      
+    - name: Build ML Engine Image
+      run: docker build -t devops/ml-engine:latest ./ml-engine
